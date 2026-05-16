@@ -1,0 +1,25 @@
+version: "3.8"
+services:
+  mcp_ailyze_app:
+    container_name: mcp_ailzye
+    build:
+      context: ../Ailyze_openai_dajngo/AILYZE/
+    ports:
+      - "8001:8001"
+    volumes:
+      - ../Ailyze_openai_dajngo/AILYZE:/AILYZE
+    env_file:
+      - ./.env
+    command: sh -c "python /AILYZE/apps/mcpapp/tools/ailyze_app.py"
+
+  mcp_get_data_app:
+    container_name: get_data
+    build:
+      context: ../Ailyze_openai_dajngo/AILYZE/
+    ports:
+      - "8002:8002"
+    volumes:
+      - ../Ailyze_openai_dajngo/AILYZE:/AILYZE
+    env_file:
+      - ./.env
+    command: sh -c "uvicorn AILYZE.mcp_server:mcp_app --host 0.0.0.0  --port 8002"

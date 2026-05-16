@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  prometheus:
+      image: prom/prometheus
+      container_name: prometheus
+      volumes:
+        - ../Ailyze_openai_dajngo/AILYZE/AILYZE/prometheus.yml:/etc/prometheus/prometheus.yml
+      ports:
+        - "9090:9090"
+      networks:
+        ailyze-nw:
+
+  node_exporter:
+    image: quay.io/prometheus/node-exporter:latest
+    container_name: node_exporter
+    restart: unless-stopped
+    network_mode: host
+    pid: host
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
