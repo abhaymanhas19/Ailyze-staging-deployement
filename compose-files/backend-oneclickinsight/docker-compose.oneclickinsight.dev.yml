@@ -17,6 +17,7 @@ services:
       ailyze-nw:
     volumes:
       - ../Ailyze_openai_dajngo/AILYZE:/AILYZE
+      - /AILYZE/staticfiles
     env_file:
       - ./.env
     command: sh -c "gunicorn --bind 0.0.0.0:8000 AILYZE.asgi:application -w 2 -k uvicorn.workers.UvicornWorker --timeout 120 --access-logfile -  --error-logfile -"
