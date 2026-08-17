@@ -8,12 +8,12 @@ services:
       context: ../Ailyze_openai_dajngo/AILYZE/
       dockerfile: Dockerfile
     environment:
-      DB_HOST: ailyze-database.postgres.database.azure.com
-      DB_USER: ailyzeadmin
-      DB_PASSWORD: Database@124
-      DB_NAME: stage
-      CELERY_BROKER_URL: "amqp://staginguser:stagingpassword@rabbitmq:5672//"
-      CELERY_RESULT_BACKEND: "redis://redis:6379/0"
+      DB_HOST: ${DB_HOST}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      CELERY_BROKER_URL: "amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@rabbitmq:5672//"
+      CELERY_RESULT_BACKEND: "${REDIS_URL}"
     volumes:
       - ../Ailyze_openai_dajngo/AILYZE:/AILYZE
     command: celery  -A AILYZE worker -l info --autoscale=10,4 -Q themeandresearchquestion -n theme -Ofair
@@ -34,12 +34,12 @@ services:
       context: ../Ailyze_openai_dajngo/AILYZE/
       dockerfile: Dockerfile
     environment:
-      DB_HOST: ailyze-database.postgres.database.azure.com
-      DB_USER: ailyzeadmin
-      DB_PASSWORD: Database@124
-      DB_NAME: stage
-      CELERY_BROKER_URL: "amqp://staginguser:stagingpassword@rabbitmq:5672//"
-      CELERY_RESULT_BACKEND: "redis://redis:6379/0"
+      DB_HOST: ${DB_HOST}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      CELERY_BROKER_URL: "amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@rabbitmq:5672//"
+      CELERY_RESULT_BACKEND: "${REDIS_URL}"
     volumes:
       - ../Ailyze_openai_dajngo/AILYZE:/AILYZE
     command: celery -A AILYZE worker -l info --autoscale=10,4 -Q addfilequeue -n addfile -Ofair
@@ -60,12 +60,12 @@ services:
       context: ../Ailyze_openai_dajngo/AILYZE/
       dockerfile: Dockerfile
     environment:
-      DB_HOST: ailyze-database.postgres.database.azure.com
-      DB_USER: ailyzeadmin
-      DB_PASSWORD: Database@124
-      DB_NAME: stage
-      CELERY_BROKER_URL: "amqp://staginguser:stagingpassword@rabbitmq:5672//"
-      CELERY_RESULT_BACKEND: "redis://redis:6379/0"
+      DB_HOST: ${DB_HOST}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      CELERY_BROKER_URL: "amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@rabbitmq:5672//"
+      CELERY_RESULT_BACKEND: "${REDIS_URL}"
     volumes:
       - ../Ailyze_openai_dajngo/AILYZE:/AILYZE
     command: celery -A AILYZE worker -l info --autoscale=10,4 -Q compareviewpoint -n compare -Ofair
@@ -85,12 +85,12 @@ services:
       context: ../Ailyze_openai_dajngo/AILYZE/
       dockerfile: Dockerfile
     environment:
-      DB_HOST: ailyze-database.postgres.database.azure.com
-      DB_USER: ailyzeadmin
-      DB_PASSWORD: Database@124
-      DB_NAME: stage
-      CELERY_BROKER_URL: "amqp://staginguser:stagingpassword@rabbitmq:5672//"
-      CELERY_RESULT_BACKEND: "redis://redis:6379/0"
+      DB_HOST: ${DB_HOST}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      CELERY_BROKER_URL: "amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@rabbitmq:5672//"
+      CELERY_RESULT_BACKEND: "${REDIS_URL}"
     volumes:
       - ../Ailyze_openai_dajngo/AILYZE:/AILYZE
     command: celery  -A AILYZE beat -l info
@@ -111,12 +111,12 @@ services:
       context: ../Ailyze_openai_dajngo/AILYZE/
       dockerfile: Dockerfile
     environment:
-      DB_HOST: ailyze-database.postgres.database.azure.com
-      DB_USER: ailyzeadmin
-      DB_PASSWORD: Database@124
-      DB_NAME: stage
-      CELERY_BROKER_URL: "amqp://staginguser:stagingpassword@rabbitmq:5672//"
-      CELERY_RESULT_BACKEND: "redis://redis:6379/0"
+      DB_HOST: ${DB_HOST}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      CELERY_BROKER_URL: "amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@rabbitmq:5672//"
+      CELERY_RESULT_BACKEND: "${REDIS_URL}"
     volumes:
       - ../Ailyze_openai_dajngo/AILYZE:/AILYZE
     command: celery -A AILYZE worker -l info --autoscale=10,4 -Q transcription -n transcription -Ofair
@@ -138,15 +138,41 @@ services:
       context: ../Ailyze_openai_dajngo/AILYZE/
       dockerfile: Dockerfile
     environment:
-      DB_HOST: ailyze-database.postgres.database.azure.com
-      DB_USER: ailyzeadmin
-      DB_PASSWORD: Database@124
-      DB_NAME: stage
-      CELERY_BROKER_URL: "amqp://staginguser:stagingpassword@rabbitmq:5672//"
-      CELERY_RESULT_BACKEND: "redis://redis:6379/0"
+      DB_HOST: ${DB_HOST}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      CELERY_BROKER_URL: "amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@rabbitmq:5672//"
+      CELERY_RESULT_BACKEND: "${REDIS_URL}"
     volumes:
       - ../Ailyze_openai_dajngo/AILYZE:/AILYZE
     command: celery -A AILYZE worker -l info --autoscale=10,4 -Q celery -n celery -Ofair
+    depends_on:
+      - redis
+      - rabbitmq
+      - backend-oneclickinsight
+    env_file:
+     - ./.env
+    networks:
+      ailyze-nw:
+
+  celery-7:
+    image: celery
+    container_name: celery-7
+    restart: always
+    build:
+      context: ../Ailyze_openai_dajngo/AILYZE/
+      dockerfile: Dockerfile
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      CELERY_BROKER_URL: "amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@rabbitmq:5672//"
+      CELERY_RESULT_BACKEND: "${REDIS_URL}"
+    volumes:
+      - ../Ailyze_openai_dajngo/AILYZE:/AILYZE
+    command: celery -A AILYZE worker -l info --autoscale=10,4 -Q imagetranscription -n imagetranscription -Ofair
     depends_on:
       - redis
       - rabbitmq

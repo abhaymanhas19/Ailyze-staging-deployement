@@ -7,12 +7,12 @@ services:
     ports:
       - "8000:8000"
     environment:
-      DB_HOST: ailyze-database.postgres.database.azure.com
-      DB_USER: ailyzeadmin
-      DB_PASSWORD: Database@124
-      DB_NAME: stage
-      CELERY_RESULT_BACKEND: "redis://redis:6379/0"
-      CELERY_BROKER_URL: "amqp://staginguser:stagingpassword@rabbitmq:5672//"
+      DB_HOST: ${DB_HOST}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      CELERY_RESULT_BACKEND: "${REDIS_URL}"
+      CELERY_BROKER_URL: "amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@rabbitmq:5672//"
     networks:
       ailyze-nw:
     volumes:
