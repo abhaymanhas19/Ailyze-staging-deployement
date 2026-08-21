@@ -182,3 +182,29 @@ services:
     networks:
       ailyze-nw:
 
+  celery-8:
+    image: celery
+    container_name: celery-8
+    restart: always
+    build:
+      context: ../Ailyze_openai_dajngo/AILYZE/
+      dockerfile: Dockerfile
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      CELERY_BROKER_URL: "amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@rabbitmq:5672//"
+      CELERY_RESULT_BACKEND: "${REDIS_URL}"
+    volumes:
+      - ../Ailyze_openai_dajngo/AILYZE:/AILYZE
+    command: celery -A AILYZE worker -l info --autoscale=10,4 -Q getdata -n getdata -Ofair
+    depends_on:
+      - redis
+      - rabbitmq
+      - backend-oneclickinsight
+    env_file:
+     - ./.env
+    networks:
+      ailyze-nw:
+
